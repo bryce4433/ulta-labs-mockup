@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ulta Labs · Provider Lab Detail View (Mockup)</title>
+
+  <!-- Mochi app font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Mochi design tokens (pulled from tailwind.config.js / src/constants / src/styles)
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { primary: ['Instrument Sans', 'sans-serif'] },
+          colors: {
+            primary: '#00417D',
+            primaryDark: '#003567',
+            brand: '#0076E3',
+            secondary: '#85DAFE',
+            success: '#00B374',
+            successBg: '#E5FFEE',
+            warning: '#C59A0B',
+            warningBg: '#FEFAEB',
+            danger: '#EA2828',
+            dangerBg: '#FFF2F2',
+            titleBlack: '#0A0A0A',
+            subtle: '#73777A',
+            borderDefault: '#EEEEEE',
+            cardBorder: '#EDEDED',
+            dashboardBg: '#F4F6F9',
+            hovered: '#F9FCFF',
+            divider: '#3b3b8d',
+          },
+          boxShadow: { card: '1px 3px 5px 0px rgba(0, 0, 0, 0.08)' },
+          borderRadius: { card: '12px', pill: '31px' },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Instrument Sans', sans-serif; }
+    .thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+    .thin-scroll::-webkit-scrollbar-thumb { background: #d6d6d6; border-radius: 8px; }
+    .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+
+<body class="bg-primary">
+
+  <!-- ===================== APP SHELL (mirrors AppPageLayout.tsx + Sidebar.jsx) ===================== -->
+
+  <!-- SIDEBAR: bg-primary #00417D, w-205px, px-4 -->
+  <aside class="hidden xl:flex fixed top-0 left-0 h-screen w-[205px] z-50 bg-primary flex-col gap-5 px-4">
+    <div class="py-7 px-2 flex justify-center">
+      <img src="MochiNewWhite.png" alt="Mochi" class="w-[135px] h-auto" />
+    </div>
+
+    <nav class="flex-1 space-y-1" aria-label="Sidebar">
+      <!-- Home -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+        <span class="flex-1 text-[15px]">Home</span>
+      </a>
+      <!-- Notifications -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="flex-1 text-[15px]">Notifications</span>
+      </a>
+      <!-- Calendar -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        <span class="flex-1 text-[15px]">Calendar</span>
+      </a>
+      <!-- Profile -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="flex-1 text-[15px]">Profile</span>
+      </a>
+      <!-- Patients -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.3 3-5 6.5-5s6.5 1.7 6.5 5"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6.1M17.5 15c2.6.5 4 2.2 4 5"/></svg>
+        <span class="flex-1 text-[15px]">Patients</span>
+      </a>
+      <!-- Encounters -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5h6v3H9zM8.5 11h7M8.5 15h5"/></svg>
+        <span class="flex-1 text-[15px]">Encounters</span>
+      </a>
+      <!-- Messages -->
+      <a class="text-white hover:bg-secondary flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg>
+        <span class="flex-1 text-[15px]">Messages</span>
+      </a>
+      <!-- Requests (active) -->
+      <a class="bg-secondary text-white flex items-center pl-[10px] pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="9" rx="4.5" transform="rotate(-45 12 12.5)"/><path d="M8.5 8.5l7 7"/></svg>
+        <span class="flex-1 text-[15px]">Requests</span>
+        <span class="bg-white px-[6px] py-[2px] rounded-full flex justify-center items-center">
+          <span class="text-primary text-xs">12</span>
+        </span>
+      </a>
+    </nav>
+
+    <nav class="mb-12">
+      <a class="text-white hover:bg-secondary flex items-center pl-7 pr-3 py-2 leading-5 font-semibold rounded-[7px] gap-x-3.5">
+        <svg class="h-6 w-6 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8"/><path d="M10 12h11M18 9l3 3-3 3"/></svg>
+        Sign Out
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN: fixed, offset by sidebar, p-2, bg-primary -->
+  <main class="flex fixed top-0 left-0 right-0 bottom-0 xl:left-[205px] p-2 bg-primary overflow-hidden">
+    <div class="flex flex-col flex-1 bg-white rounded-lg overflow-hidden min-h-0">
+
+      <!-- HEADER: h-78px, px-12, border-b border-divider/15, centered title + back button -->
+      <div class="relative flex items-center gap-4 px-12 h-[78px] shrink-0 border-b border-divider/15 bg-white">
+        <div class="flex items-center flex-1">
+          <button class="flex items-center gap-2 bg-transparent border-0 cursor-pointer font-primary text-sm font-medium text-primary p-0 hover:text-titleBlack transition-colors">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Labs Pending Review
+          </button>
+        </div>
+
+        <h1 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-primary text-[20px] font-medium leading-[26px] text-titleBlack m-0">
+          Lab Result Detail
+        </h1>
+
+        <!-- right-side cluster: source chip + queue nav -->
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary bg-secondary/25 px-2.5 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand"></span> Ulta Labs
+          </span>
+          <span class="hidden lg:inline text-[13px] text-subtle">3 of 12</span>
+          <button class="w-8 h-8 rounded-lg border border-borderDefault hover:bg-dashboardBg flex items-center justify-center text-subtle">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="w-8 h-8 rounded-lg border border-borderDefault hover:bg-dashboardBg flex items-center justify-center text-subtle">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- BODY: scrollable -->
+      <div class="flex-1 min-h-0 overflow-y-auto thin-scroll bg-dashboardBg">
+        <div class="flex gap-4 p-4 items-start">
+
+          <!-- =============== MAIN COLUMN =============== -->
+          <section class="flex-1 min-w-0 flex flex-col gap-4">
+
+            <!-- ---- Order metadata header card ---- -->
+            <div class="bg-white border border-cardBorder rounded-card shadow-card p-5">
+              <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-[16px] shrink-0">JH</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h2 class="text-[18px] font-semibold text-titleBlack">Jimi Hendrix</h2>
+                    <span class="text-[13px] text-subtle">· 27 yo · M</span>
+                  </div>
+                  <div class="text-[13px] text-subtle mt-0.5 flex items-center gap-x-4 gap-y-1 flex-wrap">
+                    <span>MRN <span class="text-titleBlack font-medium">MH-104872</span></span>
+                    <span>DOB <span class="text-titleBlack font-medium">11/27/1998</span></span>
+                    <span>jimi@example.com</span>
+                  </div>
+                </div>
+                <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-warning bg-warningBg border border-warning/30 px-3 py-1.5 rounded-full">
+                  <span class="w-1.5 h-1.5 rounded-full bg-warning"></span> Pending Review
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5 pt-5 border-t border-borderDefault">
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Panel</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">Mochi Health Panel</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Performing Lab</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">Quest Diagnostics</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Ordered</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">May 21, 2026</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Resulted</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">May 26, 2026</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Ordering Provider</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">Dr. Stevie Nicks</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Ulta Order ID</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">UL-88231-4f2a</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Specimen Collected</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">May 24, 2026 · 8:14 AM</div>
+                </div>
+                <div>
+                  <div class="text-[11px] uppercase tracking-wide text-subtle">Fasting</div>
+                  <div class="text-[14px] font-medium text-titleBlack mt-0.5">Yes</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ---- Critical value alert banner ---- -->
+            <div class="bg-dangerBg border border-danger/30 rounded-card p-4 flex items-start gap-3">
+              <svg class="w-6 h-6 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+              <div class="flex-1">
+                <div class="text-[14px] font-semibold text-danger">1 critical value in this result</div>
+                <div class="text-[13px] text-titleBlack/80 mt-0.5">
+                  Potassium <span class="font-semibold">5.9 mmol/L</span> (ref 3.5–5.1) flagged <span class="font-semibold">Critical High</span> by Quest. Review before completing.
+                </div>
+              </div>
+              <button class="text-[13px] font-semibold text-danger hover:underline shrink-0">Jump to result</button>
+            </div>
+
+            <!-- ---- Results panel ---- -->
+            <div class="bg-white border border-cardBorder rounded-card shadow-card overflow-hidden">
+
+              <!-- toolbar -->
+              <div class="flex items-center gap-3 px-5 py-3 border-b border-borderDefault flex-wrap">
+                <div class="inline-flex items-center bg-dashboardBg rounded-lg p-0.5 text-[13px] font-medium">
+                  <button id="tab-table" class="px-3 py-1.5 rounded-md bg-white text-primary shadow-sm">Results table</button>
+                  <button id="tab-pdf" class="px-3 py-1.5 rounded-md text-subtle hover:text-titleBlack">Original PDF</button>
+                </div>
+
+                <div class="h-6 w-px bg-borderDefault hidden sm:block"></div>
+
+                <div class="relative flex-1 min-w-[160px] max-w-[280px]">
+                  <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" placeholder="Search tests…" class="w-full pl-9 pr-3 py-1.5 text-[13px] rounded-lg border border-borderDefault focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
+                </div>
+
+                <label class="flex items-center gap-2 text-[13px] text-titleBlack cursor-pointer select-none ml-auto">
+                  <input id="abn-toggle" type="checkbox" class="peer sr-only" />
+                  <span class="w-9 h-5 rounded-full bg-borderDefault peer-checked:bg-primary relative transition-colors">
+                    <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform peer-checked:translate-x-4"></span>
+                  </span>
+                  Abnormal only
+                </label>
+              </div>
+
+              <!-- ===== TABLE VIEW ===== -->
+              <div id="view-table">
+                <div class="grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 bg-dashboardBg text-[11px] uppercase tracking-wide text-subtle font-semibold border-b border-borderDefault">
+                  <div>Test</div>
+                  <div class="text-right">Result</div>
+                  <div class="text-center">Flag</div>
+                  <div>Reference range</div>
+                  <div>Units</div>
+                  <div></div>
+                </div>
+
+                <!-- GROUP: CMP -->
+                <div class="px-5 py-2 bg-white border-b border-borderDefault flex items-center gap-2">
+                  <span class="text-[13px] font-semibold text-titleBlack">Comprehensive Metabolic Panel (CMP)</span>
+                  <span class="text-[11px] text-subtle">LOINC 24323-8 · 14 analytes</span>
+                  <span class="ml-auto text-[11px] font-medium text-danger bg-dangerBg px-2 py-0.5 rounded-full">2 out of range</span>
+                </div>
+                <div class="lab-rows divide-y divide-borderDefault text-[13px]">
+
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Sodium</div>
+                    <div class="text-right font-medium text-titleBlack">140</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">135 – 146</div>
+                    <div class="text-subtle">mmol/L</div>
+                    <div></div>
+                  </div>
+
+                  <!-- CRITICAL -->
+                  <div id="result-potassium" class="lab-row abnormal critical grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center bg-dangerBg/60 hover:bg-dangerBg">
+                    <div class="font-semibold text-titleBlack flex items-center gap-2">
+                      <span class="w-1 h-5 rounded bg-danger"></span> Potassium
+                    </div>
+                    <div class="text-right font-bold text-danger">5.9</div>
+                    <div class="text-center"><span class="inline-block text-[10px] font-bold text-white bg-danger px-1.5 py-0.5 rounded">CRIT</span></div>
+                    <div class="text-subtle">3.5 – 5.1</div>
+                    <div class="text-subtle">mmol/L</div>
+                    <div class="text-center">
+                      <button class="cmt-btn text-subtle hover:text-primary inline-flex" aria-label="Show comment">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="cmt-row hidden bg-dangerBg/30 px-5 py-3 text-[12px] text-titleBlack/80 border-l-2 border-danger ml-5">
+                    <span class="font-semibold text-danger">Quest comment:</span> Critical high. Possible specimen hemolysis — recommend repeat draw to confirm before clinical action.
+                  </div>
+
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Chloride</div>
+                    <div class="text-right font-medium text-titleBlack">101</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">98 – 110</div>
+                    <div class="text-subtle">mmol/L</div>
+                    <div></div>
+                  </div>
+
+                  <!-- HIGH -->
+                  <div class="lab-row abnormal grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="font-medium text-titleBlack">Glucose, fasting</div>
+                    <div class="text-right font-semibold text-warning">142</div>
+                    <div class="text-center"><span class="inline-block text-[10px] font-bold text-warning bg-warningBg border border-warning/40 px-1.5 py-0.5 rounded">H</span></div>
+                    <div class="text-subtle">65 – 99</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div class="text-center">
+                      <button class="cmt-btn text-subtle hover:text-primary inline-flex" aria-label="Show comment">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="cmt-row hidden bg-dashboardBg px-5 py-3 text-[12px] text-titleBlack/80 border-l-2 border-warning ml-5">
+                    <span class="font-semibold">Quest comment:</span> Fasting glucose in impaired range. Correlate with A1c (this panel) and clinical context.
+                  </div>
+
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">BUN</div>
+                    <div class="text-right font-medium text-titleBlack">14</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">7 – 20</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Creatinine</div>
+                    <div class="text-right font-medium text-titleBlack">0.95</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">0.70 – 1.30</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">eGFR</div>
+                    <div class="text-right font-medium text-titleBlack">104</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">&gt; 59</div>
+                    <div class="text-subtle">mL/min</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Calcium</div>
+                    <div class="text-right font-medium text-titleBlack">9.4</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">8.6 – 10.3</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">AST</div>
+                    <div class="text-right font-medium text-titleBlack">22</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">10 – 40</div>
+                    <div class="text-subtle">U/L</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">ALT</div>
+                    <div class="text-right font-medium text-titleBlack">26</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">9 – 46</div>
+                    <div class="text-subtle">U/L</div>
+                    <div></div>
+                  </div>
+                </div>
+
+                <!-- GROUP: Lipid -->
+                <div class="px-5 py-2 bg-white border-y border-borderDefault flex items-center gap-2">
+                  <span class="text-[13px] font-semibold text-titleBlack">Lipid Panel With Ratios</span>
+                  <span class="text-[11px] text-subtle">LOINC 57698-3 · 5 analytes</span>
+                  <span class="ml-auto text-[11px] font-medium text-warning bg-warningBg px-2 py-0.5 rounded-full">2 out of range</span>
+                </div>
+                <div class="lab-rows divide-y divide-borderDefault text-[13px]">
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Total Cholesterol</div>
+                    <div class="text-right font-medium text-titleBlack">196</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">&lt; 200</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row abnormal grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="font-medium text-titleBlack">HDL Cholesterol</div>
+                    <div class="text-right font-semibold text-warning">38</div>
+                    <div class="text-center"><span class="inline-block text-[10px] font-bold text-warning bg-warningBg border border-warning/40 px-1.5 py-0.5 rounded">L</span></div>
+                    <div class="text-subtle">&gt; 40</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row abnormal grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="font-medium text-titleBlack">LDL-Cholesterol (calc)</div>
+                    <div class="text-right font-semibold text-warning">132</div>
+                    <div class="text-center"><span class="inline-block text-[10px] font-bold text-warning bg-warningBg border border-warning/40 px-1.5 py-0.5 rounded">H</span></div>
+                    <div class="text-subtle">&lt; 100</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Triglycerides</div>
+                    <div class="text-right font-medium text-titleBlack">128</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">&lt; 150</div>
+                    <div class="text-subtle">mg/dL</div>
+                    <div></div>
+                  </div>
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">Chol/HDL Ratio</div>
+                    <div class="text-right font-medium text-titleBlack">5.2</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">&lt; 5.0</div>
+                    <div class="text-subtle">ratio</div>
+                    <div></div>
+                  </div>
+                </div>
+
+                <!-- GROUP: A1c -->
+                <div class="px-5 py-2 bg-white border-y border-borderDefault flex items-center gap-2">
+                  <span class="text-[13px] font-semibold text-titleBlack">Hemoglobin A1c</span>
+                  <span class="text-[11px] text-subtle">LOINC 4548-4 · 1 analyte</span>
+                  <span class="ml-auto text-[11px] font-medium text-warning bg-warningBg px-2 py-0.5 rounded-full">1 out of range</span>
+                </div>
+                <div class="lab-rows divide-y divide-borderDefault text-[13px]">
+                  <div class="lab-row abnormal grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="font-medium text-titleBlack">Hemoglobin A1c</div>
+                    <div class="text-right font-semibold text-warning">6.2</div>
+                    <div class="text-center"><span class="inline-block text-[10px] font-bold text-warning bg-warningBg border border-warning/40 px-1.5 py-0.5 rounded">H</span></div>
+                    <div class="text-subtle">&lt; 5.7</div>
+                    <div class="text-subtle">%</div>
+                    <div class="text-center">
+                      <button class="cmt-btn text-subtle hover:text-primary inline-flex" aria-label="Show comment">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="cmt-row hidden bg-dashboardBg px-5 py-3 text-[12px] text-titleBlack/80 border-l-2 border-warning ml-5">
+                    <span class="font-semibold">Quest comment:</span> 5.7–6.4% consistent with prediabetes per ADA criteria. Methodology: HPLC.
+                  </div>
+                </div>
+
+                <!-- GROUP: TSH -->
+                <div class="px-5 py-2 bg-white border-y border-borderDefault flex items-center gap-2">
+                  <span class="text-[13px] font-semibold text-titleBlack">Thyroid Stimulating Hormone (TSH)</span>
+                  <span class="text-[11px] text-subtle">LOINC 3016-3 · 1 analyte</span>
+                  <span class="ml-auto text-[11px] font-medium text-success bg-successBg px-2 py-0.5 rounded-full">In range</span>
+                </div>
+                <div class="lab-rows divide-y divide-borderDefault text-[13px]">
+                  <div class="lab-row grid grid-cols-[minmax(0,2.4fr)_90px_70px_140px_90px_40px] gap-2 px-5 py-2.5 items-center hover:bg-hovered">
+                    <div class="text-titleBlack">TSH</div>
+                    <div class="text-right font-medium text-titleBlack">2.10</div>
+                    <div class="text-center"></div>
+                    <div class="text-subtle">0.40 – 4.50</div>
+                    <div class="text-subtle">mIU/L</div>
+                    <div></div>
+                  </div>
+                </div>
+
+                <div class="px-5 py-3 text-[11px] text-subtle bg-dashboardBg border-t border-borderDefault">
+                  Source: Quest Diagnostics via Ulta Labs SFTP · CSV ingested May 26, 2026 · Reference ranges and comments as provided by the performing lab.
+                </div>
+              </div>
+
+              <!-- ===== PDF VIEW ===== -->
+              <div id="view-pdf" class="hidden p-5">
+                <div class="rounded-lg border border-borderDefault bg-dashboardBg h-[520px] flex flex-col items-center justify-center text-subtle gap-3">
+                  <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+                  <div class="text-[14px] font-medium text-titleBlack">Original lab report (PDF)</div>
+                  <div class="text-[12px] max-w-[320px] text-center">Embedded PDF viewer renders here (the official Quest report). Kept available so providers can pull the source document.</div>
+                  <button class="mt-2 inline-flex items-center gap-2 text-[13px] font-medium text-primary bg-white border border-borderDefault rounded-lg px-4 py-2 hover:bg-hovered">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+                    Download PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- =============== RIGHT RAIL =============== -->
+          <aside class="w-[320px] shrink-0 hidden lg:flex flex-col gap-4 sticky top-0">
+
+            <div class="bg-white border border-cardBorder rounded-card shadow-card p-4">
+              <h3 class="text-[14px] font-semibold text-titleBlack mb-3">Result summary</h3>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="rounded-lg bg-dangerBg py-2.5">
+                  <div class="text-[20px] font-bold text-danger leading-none">1</div>
+                  <div class="text-[11px] text-danger mt-1">Critical</div>
+                </div>
+                <div class="rounded-lg bg-warningBg py-2.5">
+                  <div class="text-[20px] font-bold text-warning leading-none">4</div>
+                  <div class="text-[11px] text-warning mt-1">Abnormal</div>
+                </div>
+                <div class="rounded-lg bg-successBg py-2.5">
+                  <div class="text-[20px] font-bold text-success leading-none">16</div>
+                  <div class="text-[11px] text-success mt-1">In range</div>
+                </div>
+              </div>
+              <button class="w-full mt-3 text-[12px] font-medium text-primary bg-dashboardBg rounded-lg py-2 hover:bg-hovered">View abnormal only</button>
+            </div>
+
+            <div class="bg-white border border-cardBorder rounded-card shadow-card p-4 flex flex-col gap-2">
+              <h3 class="text-[14px] font-semibold text-titleBlack mb-1">Actions</h3>
+              <button class="flex items-center gap-2.5 text-[13px] font-medium text-titleBlack bg-white border border-borderDefault rounded-lg px-3 py-2 hover:bg-hovered">
+                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+                View original PDF
+              </button>
+              <button class="flex items-center gap-2.5 text-[13px] font-medium text-titleBlack bg-white border border-borderDefault rounded-lg px-3 py-2 hover:bg-hovered">
+                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></svg>
+                Download PDF
+              </button>
+              <button class="flex items-center gap-2.5 text-[13px] font-medium text-titleBlack bg-white border border-borderDefault rounded-lg px-3 py-2 hover:bg-hovered">
+                <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+                Message patient
+              </button>
+            </div>
+
+            <div class="bg-white border border-cardBorder rounded-card shadow-card p-4">
+              <h3 class="text-[14px] font-semibold text-titleBlack mb-2">Review note</h3>
+              <textarea rows="5" placeholder="Add an async encounter note for this result…" class="w-full text-[13px] rounded-lg border border-borderDefault focus:border-primary focus:ring-1 focus:ring-primary outline-none p-3 resize-none"></textarea>
+              <button class="w-full mt-3 text-[14px] font-medium text-white bg-primary hover:bg-primaryDark rounded-pill py-2.5 transition-colors">Complete Review</button>
+              <button class="w-full mt-2 text-[13px] font-medium text-primary hover:underline py-1">Submit async encounter</button>
+              <p class="text-[11px] text-subtle mt-2 text-center">Completing moves this result to the patient's History tab.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // toggle inline Quest comments
+    document.querySelectorAll('.cmt-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var row = btn.closest('.lab-row');
+        var cmt = row.nextElementSibling;
+        if (cmt && cmt.classList.contains('cmt-row')) {
+          cmt.classList.toggle('hidden');
+          btn.classList.toggle('text-primary');
+        }
+      });
+    });
+
+    // abnormal-only filter
+    var abnToggle = document.getElementById('abn-toggle');
+    abnToggle.addEventListener('change', function () {
+      var on = abnToggle.checked;
+      document.querySelectorAll('#view-table .lab-row').forEach(function (row) {
+        if (!row.classList.contains('abnormal')) {
+          row.style.display = on ? 'none' : '';
+          var cmt = row.nextElementSibling;
+          if (on && cmt && cmt.classList.contains('cmt-row')) cmt.classList.add('hidden');
+        }
+      });
+    });
+
+    // table / PDF view toggle
+    var tabTable = document.getElementById('tab-table');
+    var tabPdf = document.getElementById('tab-pdf');
+    var viewTable = document.getElementById('view-table');
+    var viewPdf = document.getElementById('view-pdf');
+    function setTab(isTable) {
+      viewTable.classList.toggle('hidden', !isTable);
+      viewPdf.classList.toggle('hidden', isTable);
+      tabTable.className = isTable
+        ? 'px-3 py-1.5 rounded-md bg-white text-primary shadow-sm'
+        : 'px-3 py-1.5 rounded-md text-subtle hover:text-titleBlack';
+      tabPdf.className = !isTable
+        ? 'px-3 py-1.5 rounded-md bg-white text-primary shadow-sm'
+        : 'px-3 py-1.5 rounded-md text-subtle hover:text-titleBlack';
+    }
+    tabTable.addEventListener('click', function () { setTab(true); });
+    tabPdf.addEventListener('click', function () { setTab(false); });
+  </script>
+</body>
+</html>
