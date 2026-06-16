@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochi — Patient Lab Results (Ulta Labs mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #000045;
+    --navy-2: #3b3b8d;
+    --bg: #f3f6f9;
+    --card: #ffffff;
+    --text: #000045;
+    --text-subtle: #606069;
+    --text-subtler: #7e7f87;
+    --text-inverse: #ffffff;
+    --border-subtle: #00004526;
+    --border-subtler: #3b3b8d26;
+    --ok-50: #ecfdf3;  --ok-500: #17b26a;  --ok-700: #0b8850;
+    --warn-50: #fffaeb; --warn-500: #f79009; --warn-700: #d06507;
+    --err-50: #fef3f2; --err-300: #fda29b; --err-500: #ea4135; --err-700: #c5291d;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #d9dee4;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 48px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .phone {
+    width: 390px;
+    background: var(--bg);
+    border-radius: 46px;
+    overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0, 0, 20, 0.28);
+    border: 1px solid rgba(0, 0, 30, 0.06);
+  }
+  /* ---- status bar ---- */
+  .statusbar {
+    height: 54px; padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 15px; font-weight: 600; color: #0b0b16;
+  }
+  .statusbar .right { display: flex; align-items: center; gap: 7px; }
+  .battery { border: 1.5px solid #0b0b16; border-radius: 4px; padding: 1px 3px; font-size: 10px; font-weight: 700; }
+
+  /* ---- app bar ---- */
+  .appbar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 2px 20px 14px;
+  }
+  .appbar .back { color: var(--navy); display: flex; }
+  .appbar h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.2px; }
+
+  /* ---- scroll body ---- */
+  .screen { padding: 0 20px 24px; max-height: 760px; overflow-y: auto; }
+  .screen::-webkit-scrollbar { width: 0; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 30, 0.05);
+  }
+  .card + .card { margin-top: 16px; }
+  .row { display: flex; align-items: center; gap: 14px; }
+  .grow { flex: 1; min-width: 0; }
+
+  /* ---- order header ---- */
+  .tile {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: #eef1f6; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel-name { font-size: 20px; font-weight: 600; letter-spacing: -0.2px; }
+  .panel-sub { font-size: 13px; color: var(--text-subtler); margin-top: 2px; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; border: 1px solid;
+    white-space: nowrap;
+  }
+  .pill-ok { color: var(--ok-700); background: var(--ok-50); border-color: var(--ok-500); }
+
+  .reviewed-note {
+    display: flex; align-items: flex-start; gap: 9px;
+    margin-top: 16px; padding: 12px 14px;
+    background: var(--ok-50); border: 1px solid #abefc6;
+    border-radius: 12px;
+  }
+  .reviewed-note p { font-size: 13px; line-height: 1.45; color: var(--ok-700); font-weight: 500; }
+
+  .meta { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .meta-row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+  .meta-row .k { color: var(--text-subtler); }
+  .meta-row .v { font-weight: 500; text-align: right; }
+
+  /* ---- provider note ---- */
+  .provider-note { border-left: 3px solid var(--navy-2); }
+  .pn-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--navy-2); margin-bottom: 12px; }
+  .pn-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .pn-av { width: 40px; height: 40px; border-radius: 50%; background: #e8e8f3; color: var(--navy-2); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .pn-name { font-size: 15px; font-weight: 600; }
+  .pn-date { font-size: 12px; color: var(--text-subtler); margin-top: 2px; }
+  .pn-body { font-size: 14px; line-height: 1.55; color: var(--text-subtle); }
+
+  /* ---- results ---- */
+  .results-title {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .results-title h2 { font-size: 18px; font-weight: 600; }
+  .legend { display: flex; gap: 10px; }
+  .legend span { font-size: 11px; color: var(--text-subtler); display: inline-flex; align-items: center; gap: 4px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-warn { background: var(--warn-500); }
+  .dot-err { background: var(--err-500); }
+
+  .group-head {
+    font-size: 12px; font-weight: 600; color: var(--text-subtle);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin: 20px 0 2px;
+  }
+  .group-head:first-of-type { margin-top: 14px; }
+
+  .lab-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .lab-row:last-child { border-bottom: none; }
+  .lab-name { font-size: 15px; font-weight: 500; }
+  .lab-ref { font-size: 12px; color: var(--text-subtler); margin-top: 3px; }
+  .lab-val { text-align: right; flex-shrink: 0; }
+  .lab-val .num { font-size: 17px; font-weight: 600; }
+  .lab-val .unit { font-size: 12px; color: var(--text-subtler); margin-left: 3px; font-weight: 400; }
+  .num-high { color: var(--warn-700); }
+  .num-crit { color: var(--err-700); }
+  .flag {
+    display: inline-block; margin-top: 5px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    padding: 2px 8px; border-radius: 999px; border: 1px solid;
+  }
+  .flag-high { color: var(--warn-700); background: var(--warn-50); border-color: var(--warn-500); }
+  .flag-crit { color: var(--err-700); background: var(--err-50); border-color: var(--err-500); }
+
+  /* ---- buttons ---- */
+  .pdf-card { display: flex; align-items: center; gap: 14px; }
+  .pdf-ico {
+    width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+    background: #fdeceb; display: flex; align-items: center; justify-content: center;
+  }
+  .pdf-meta .t { font-size: 15px; font-weight: 600; }
+  .pdf-meta .s { font-size: 12px; color: var(--text-subtler); margin-top: 2px; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 16px; font-weight: 600;
+    padding: 15px; cursor: pointer;
+  }
+  .btn-navy { background: var(--navy); color: #fff; margin-top: 16px; }
+
+  .footnote { font-size: 11px; color: var(--text-subtler); text-align: center; margin-top: 16px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <!-- status bar -->
+    <div class="statusbar">
+      <span>11:11</span>
+      <span class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0b0b16"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#0b0b16"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#0b0b16"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#0b0b16" opacity=".3"/></svg>
+        <span style="font-size:14px;font-weight:700">5G+</span>
+        <span class="battery">96</span>
+      </span>
+    </div>
+
+    <!-- app bar -->
+    <div class="appbar">
+      <span class="back">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </span>
+      <h1>Lab Results</h1>
+    </div>
+
+    <div class="screen">
+      <!-- order header card -->
+      <div class="card">
+        <div class="row">
+          <span class="tile">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+          </span>
+          <div class="grow">
+            <div class="panel-name">Mochi Health Panel</div>
+            <div class="panel-sub">Quest Diagnostics &middot; via Ulta Labs</div>
+          </div>
+        </div>
+
+        <div class="reviewed-note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b8850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <p>Reviewed by your provider. These results are ready for you to view.</p>
+        </div>
+
+        <div class="meta">
+          <div class="meta-row"><span class="k">Status</span><span class="v"><span class="pill pill-ok">Complete &middot; Provider reviewed</span></span></div>
+          <div class="meta-row"><span class="k">Ordered</span><span class="v">Jun 2, 2026</span></div>
+          <div class="meta-row"><span class="k">Resulted</span><span class="v">Jun 9, 2026</span></div>
+          <div class="meta-row"><span class="k">Ordering provider</span><span class="v">Dr. Rhea Levine</span></div>
+          <div class="meta-row"><span class="k">Reviewed by</span><span class="v">Dr. Rhea Levine &middot; Jun 10</span></div>
+        </div>
+      </div>
+
+      <!-- provider note (optional: only renders if the reviewing provider left a comment) -->
+      <div class="card provider-note">
+        <div class="pn-label">YOUR PROVIDER'S NOTE</div>
+        <div class="pn-head">
+          <span class="pn-av">RL</span>
+          <div class="grow">
+            <div class="pn-name">Dr. Rhea Levine</div>
+            <div class="pn-date">Jun 10, 2026</div>
+          </div>
+        </div>
+        <p class="pn-body">Your A1c and cholesterol came back slightly above range. Nothing urgent, but let's make a few small diet changes. I'll follow up in a message with the details, and reach out anytime with questions.</p>
+      </div>
+
+      <!-- results card -->
+      <div class="card">
+        <div class="results-title">
+          <h2>Results</h2>
+          <div class="legend">
+            <span><span class="dot dot-warn"></span>Out of range</span>
+            <span><span class="dot dot-err"></span>Critical</span>
+          </div>
+        </div>
+
+        <!-- CMP -->
+        <div class="group-head">Comprehensive Metabolic Panel</div>
+        <div class="lab-row">
+          <div><div class="lab-name">Glucose</div><div class="lab-ref">Ref: 65&ndash;99 mg/dL</div></div>
+          <div class="lab-val"><span class="num num-high">105</span><span class="unit">mg/dL</span><br><span class="flag flag-high">HIGH</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">Calcium</div><div class="lab-ref">Ref: 8.6&ndash;10.2 mg/dL</div></div>
+          <div class="lab-val"><span class="num">9.4</span><span class="unit">mg/dL</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">Sodium</div><div class="lab-ref">Ref: 135&ndash;146 mmol/L</div></div>
+          <div class="lab-val"><span class="num">140</span><span class="unit">mmol/L</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">Potassium</div><div class="lab-ref">Ref: 3.5&ndash;5.3 mmol/L</div></div>
+          <div class="lab-val"><span class="num">4.2</span><span class="unit">mmol/L</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">Creatinine</div><div class="lab-ref">Ref: 0.6&ndash;1.1 mg/dL</div></div>
+          <div class="lab-val"><span class="num">0.9</span><span class="unit">mg/dL</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">ALT</div><div class="lab-ref">Ref: 9&ndash;46 U/L</div></div>
+          <div class="lab-val"><span class="num">22</span><span class="unit">U/L</span></div>
+        </div>
+
+        <!-- Thyroid -->
+        <div class="group-head">Thyroid</div>
+        <div class="lab-row">
+          <div><div class="lab-name">TSH</div><div class="lab-ref">Ref: 0.40&ndash;4.50 mIU/L</div></div>
+          <div class="lab-val"><span class="num">2.1</span><span class="unit">mIU/L</span></div>
+        </div>
+
+        <!-- Diabetes -->
+        <div class="group-head">Diabetes</div>
+        <div class="lab-row">
+          <div><div class="lab-name">Hemoglobin A1c</div><div class="lab-ref">Ref: &lt; 5.7 %</div></div>
+          <div class="lab-val"><span class="num num-high">5.9</span><span class="unit">%</span><br><span class="flag flag-high">HIGH</span></div>
+        </div>
+
+        <!-- Lipids -->
+        <div class="group-head">Lipid Panel</div>
+        <div class="lab-row">
+          <div><div class="lab-name">Total Cholesterol</div><div class="lab-ref">Ref: &lt; 200 mg/dL</div></div>
+          <div class="lab-val"><span class="num num-high">215</span><span class="unit">mg/dL</span><br><span class="flag flag-high">HIGH</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">HDL Cholesterol</div><div class="lab-ref">Ref: &gt; 40 mg/dL</div></div>
+          <div class="lab-val"><span class="num">48</span><span class="unit">mg/dL</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">LDL Cholesterol</div><div class="lab-ref">Ref: &lt; 100 mg/dL</div></div>
+          <div class="lab-val"><span class="num num-crit">168</span><span class="unit">mg/dL</span><br><span class="flag flag-crit">CRITICAL</span></div>
+        </div>
+        <div class="lab-row">
+          <div><div class="lab-name">Triglycerides</div><div class="lab-ref">Ref: &lt; 150 mg/dL</div></div>
+          <div class="lab-val"><span class="num">130</span><span class="unit">mg/dL</span></div>
+        </div>
+      </div>
+
+      <!-- PDF card -->
+      <div class="card">
+        <div class="pdf-card">
+          <span class="pdf-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea4135" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <div class="pdf-meta grow">
+            <div class="t">Full lab report</div>
+            <div class="s">Official Quest result &middot; PDF</div>
+          </div>
+        </div>
+        <button class="btn btn-navy">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
+      </div>
+
+      <p class="footnote">Results provided by Quest Diagnostics via Ulta Labs.<br>Questions about your results? Message your care team.</p>
+    </div>
+  </div>
+</body>
+</html>
