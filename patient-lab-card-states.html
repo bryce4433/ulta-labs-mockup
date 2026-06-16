@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochi — Patient lab order card, all states (Ulta Labs mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --text: #000014;
+    --text-subtle: #606069;
+    --text-subtler: #7e7f87;
+    --secondary: #3b3b8d;
+    --secondary-subtle: #ebebf4;
+    --bg: #f3f6f9;
+    --card: #ffffff;
+    --border-subtle: #3b3b8d26;
+    --ok-700: #0b8850; --ok-500: #17b26a; --ok-50: #ecfdf3;
+    --warn-700: #d06507; --warn-500: #f79009; --warn-50: #fffaeb;
+    --err-700: #c5291d; --err-500: #ea4135; --err-50: #fef3f2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #e7ebf0; color: var(--text);
+    padding: 40px 24px 64px; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1180px; margin: 0 auto; }
+  .page > h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.4px; }
+  .page > p { font-size: 15px; color: var(--text-subtle); margin-top: 6px; max-width: 720px; }
+
+  .group-title { font-size: 14px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-subtle); margin: 36px 0 16px; }
+  .gallery { display: flex; flex-wrap: wrap; gap: 24px; }
+  .state { width: 348px; }
+  .cap { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .cap .num { font-size: 13px; font-weight: 700; color: var(--secondary); }
+  .cap .lbl { font-size: 13px; font-weight: 600; color: var(--text); }
+  .meaning { font-size: 12.5px; color: var(--text-subtler); margin-top: 10px; line-height: 1.45; }
+
+  /* the card itself = StandardCard */
+  .card { background: var(--card); border-radius: 12px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+  .crow { display: flex; align-items: center; gap: 12px; }
+  .grow { flex: 1; min-width: 0; }
+  .thumb { width: 40px; height: 40px; border-radius: 8px; background: #f3f6f9; border: 1px solid #eef1f6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .ctitle { font-size: 16px; font-weight: 600; letter-spacing: -0.1px; }
+  .csub { font-size: 14px; color: var(--text-subtle); margin-top: 1px; }
+  .chev { color: var(--text-subtle); flex-shrink: 0; }
+  .muted .thumb svg { opacity: .5; }
+  .muted .ctitle { color: var(--text-subtle); }
+
+  .tag { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; border: 1px solid; white-space: nowrap; }
+  .tag-warn { color: var(--warn-700); background: var(--warn-50); border-color: var(--warn-500); }
+  .tag-ok { color: var(--ok-700); background: var(--ok-50); border-color: var(--ok-500); }
+
+  /* progress bar */
+  .progress { position: relative; height: 26px; margin-top: 12px; }
+  .track { position: absolute; top: 11px; left: 0; right: 0; height: 6px; border-radius: 999px; background: var(--secondary-subtle); overflow: hidden; }
+  .fill { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, #3b3b8d80, #3b3b8d); }
+  .fill.done { background: var(--ok-500); }
+  .pcircle { position: absolute; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--card); border: 1px solid var(--secondary); display: flex; align-items: center; justify-content: center; transform: translateX(-50%); }
+  .pcircle.ok { border-color: var(--ok-500); }
+
+  /* terminal status line (replaces the progress bar) */
+  .statusline { margin-top: 14px; }
+  .spill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid; }
+  .spill-gray { color: var(--text-subtle); background: #f1f1f4; border-color: #00004520; }
+  .spill-red { color: var(--err-700); background: var(--err-50); border-color: var(--err-500); }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1>Patient lab order card &mdash; all states</h1>
+    <p>How a single lab order looks in the patient app's 'Labs &amp; Testing' tab as it moves through the flow. The four in-flow states use the medication-style progress card; the terminal states use a status pill. Labels below each card match the PRD status badges (IV.D).</p>
+
+    <div class="group-title">Active Requests</div>
+    <div class="gallery">
+
+      <!-- 1. Action needed -->
+      <div class="state">
+        <div class="cap"><span class="num">1</span><span class="lbl">Approve &amp; Pay (Action Needed)</span></div>
+        <div class="card">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Review &amp; accept</div><div class="csub">Mochi Health Panel</div></div>
+            <span class="tag tag-warn">Action needed</span>
+          </div>
+          <div class="progress">
+            <div class="track"><div class="fill" style="width:6%"></div></div>
+            <div class="pcircle" style="left:6%"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></div>
+          </div>
+        </div>
+        <div class="meaning">Provider placed the order. Awaiting your accept &amp; pay; nothing sent to Ulta yet.</div>
+      </div>
+
+      <!-- 2. Ordered, pending -->
+      <div class="state">
+        <div class="cap"><span class="num">2</span><span class="lbl">Ordered, Pending</span></div>
+        <div class="card">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Get drawn at Quest</div><div class="csub">Mochi Health Panel</div></div>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="progress">
+            <div class="track"><div class="fill" style="width:42%"></div></div>
+            <div class="pcircle" style="left:42%"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          </div>
+        </div>
+        <div class="meaning">Accepted &amp; paid, order placed with Ulta. Walk into any eligible Quest to get drawn.</div>
+      </div>
+
+      <!-- 3. Results pending review -->
+      <div class="state">
+        <div class="cap"><span class="num">3</span><span class="lbl">Completed, Sent to Provider for Review</span></div>
+        <div class="card">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Results pending review</div><div class="csub">Mochi Health Panel</div></div>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="progress">
+            <div class="track"><div class="fill" style="width:75%"></div></div>
+            <div class="pcircle" style="left:75%"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div>
+          </div>
+        </div>
+        <div class="meaning">Sample resulted and returned to Mochi. Your provider is reviewing; values not shown yet.</div>
+      </div>
+
+    </div>
+
+    <div class="group-title">History</div>
+    <div class="gallery">
+
+      <!-- 4. Provider reviewed -->
+      <div class="state">
+        <div class="cap"><span class="num">4</span><span class="lbl">Complete, Provider Reviewed</span></div>
+        <div class="card">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Results ready</div><div class="csub">Mochi Health Panel</div></div>
+            <span class="tag tag-ok">Reviewed</span>
+          </div>
+          <div class="progress">
+            <div class="track"><div class="fill done" style="width:100%"></div></div>
+            <div class="pcircle ok" style="left:100%"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0b8850" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          </div>
+        </div>
+        <div class="meaning">Provider reviewed and released. Tap to open the results page (structured results + PDF).</div>
+      </div>
+
+      <!-- 5. Order expired -->
+      <div class="state">
+        <div class="cap"><span class="num">5</span><span class="lbl">Order Expired</span></div>
+        <div class="card muted">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Order expired</div><div class="csub">Mochi Health Panel</div></div>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="statusline"><span class="spill spill-gray"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Expired</span></div>
+        </div>
+        <div class="meaning">Paid but the draw wasn't completed within the order's validity window.</div>
+      </div>
+
+      <!-- 6. Not approved -->
+      <div class="state">
+        <div class="cap"><span class="num">6</span><span class="lbl">Not Approved</span></div>
+        <div class="card muted">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Not approved</div><div class="csub">Mochi Health Panel</div></div>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="statusline"><span class="spill spill-red"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Not approved</span></div>
+        </div>
+        <div class="meaning">You declined, or didn't respond in the approval window. No charge, nothing sent to Ulta.</div>
+      </div>
+
+      <!-- 7. Order canceled -->
+      <div class="state">
+        <div class="cap"><span class="num">7</span><span class="lbl">Order Canceled</span></div>
+        <div class="card muted">
+          <div class="crow">
+            <span class="thumb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="grow"><div class="ctitle">Order canceled</div><div class="csub">Mochi Health Panel</div></div>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="statusline"><span class="spill spill-gray"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Canceled</span></div>
+        </div>
+        <div class="meaning">Canceled by you or your provider.</div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
