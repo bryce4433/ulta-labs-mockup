@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochi — Lab order details (Ulta Labs mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --text: #000014;
+    --text-subtle: #606069;
+    --secondary: #3b3b8d;
+    --secondary-subtle: #ebebf4;
+    --bg: #f3f6f9;
+    --card: #ffffff;
+    --border-subtle: #3b3b8d26;
+    --ok-700: #0b8850;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #d9dee4; color: var(--text);
+    display: flex; justify-content: center; padding: 28px 16px 48px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .phone { width: 390px; background: var(--bg); border-radius: 46px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,20,.28); border: 1px solid rgba(0,0,30,.06); }
+  .statusbar { height: 54px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; color: #0b0b16; }
+  .statusbar .right { display: flex; align-items: center; gap: 7px; }
+  .battery { border: 1.5px solid #0b0b16; border-radius: 4px; padding: 1px 3px; font-size: 10px; font-weight: 700; }
+
+  .appbar { display: flex; align-items: center; gap: 14px; padding: 2px 20px 16px; }
+  .appbar .back { width: 38px; height: 38px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,30,.1); display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .appbar h1 { font-size: 18px; font-weight: 600; }
+
+  .screen { padding: 0 20px 24px; }
+
+  /* header */
+  .order-head { margin-bottom: 18px; }
+  .order-head .name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+  .order-head .meta { font-size: 16px; color: var(--text-subtle); margin-top: 5px; }
+
+  /* timeline card */
+  .timeline-card { background: var(--card); border: 1px solid var(--border-subtle); border-radius: 32px; padding: 20px; }
+  .tl-status { font-size: 18px; font-weight: 500; color: var(--secondary); }
+  .tl-sub { font-size: 16px; color: var(--text-subtle); margin-top: 3px; margin-bottom: 18px; }
+
+  .stage { }
+  .stage-row { display: flex; align-items: center; gap: 16px; }
+  .circle { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .circle.done { background: var(--card); border: 1px solid var(--secondary); }
+  .circle.future { background: var(--bg); }
+  .stage-text { flex: 1; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
+  .stage-label { font-size: 16px; color: var(--text); }
+  .stage-label.current { font-weight: 500; }
+  .stage-label.future { color: var(--text-subtle); }
+  .stage-date { font-size: 16px; color: var(--text-subtle); }
+  .connector { width: 26px; display: flex; justify-content: center; }
+  .connector .line { width: 2px; height: 22px; }
+  .connector .line.filled { background: var(--secondary); }
+  .connector .line.dashed { border-left: 2px dashed var(--border-subtle); }
+
+  /* sections */
+  .section { margin-top: 24px; }
+  .section h2 { font-size: 18px; font-weight: 500; margin-bottom: 12px; }
+  .detail-row { display: flex; align-items: center; gap: 16px; }
+  .thumb { width: 40px; height: 40px; border-radius: 8px; background: #f3f6f9; border: 1px solid #eef1f6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .detail-lines { font-size: 16px; color: var(--text-subtle); line-height: 1.5; }
+  .detail-lines .strong { color: var(--text); font-weight: 500; }
+  .body-text { font-size: 16px; color: var(--text-subtle); line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="statusbar">
+      <span style="display:flex;align-items:center;gap:7px">9:43 <svg width="15" height="15" viewBox="0 0 24 24" fill="#0b0b16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+      <span class="right">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="7" width="3" height="5" rx="1" fill="#0b0b16"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#0b0b16"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#0b0b16"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#0b0b16"/></svg>
+        <span style="font-size:14px;font-weight:700">5G</span>
+        <span class="battery">16</span>
+      </span>
+    </div>
+
+    <div class="appbar">
+      <span class="back">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </span>
+      <h1>Order details</h1>
+    </div>
+
+    <div class="screen">
+      <!-- header -->
+      <div class="order-head">
+        <div class="name">Mochi Health Panel</div>
+        <div class="meta">June 2, 2026</div>
+        <div class="meta">$89.00</div>
+      </div>
+
+      <!-- timeline -->
+      <div class="timeline-card">
+        <div class="tl-status">Results pending review</div>
+        <div class="tl-sub">Your provider is reviewing your results.</div>
+
+        <!-- 1 -->
+        <div class="stage">
+          <div class="stage-row">
+            <span class="circle done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span>
+            <div class="stage-text"><span class="stage-label">Order sent by provider</span><span class="stage-date">Mon, Jun 2</span></div>
+          </div>
+          <div class="connector"><div class="line filled"></div></div>
+        </div>
+        <!-- 2 -->
+        <div class="stage">
+          <div class="stage-row">
+            <span class="circle done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <div class="stage-text"><span class="stage-label">Accepted &amp; paid</span><span class="stage-date">Mon, Jun 2</span></div>
+          </div>
+          <div class="connector"><div class="line filled"></div></div>
+        </div>
+        <!-- 3 -->
+        <div class="stage">
+          <div class="stage-row">
+            <span class="circle done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+            <div class="stage-text"><span class="stage-label">Sample drawn at Quest</span><span class="stage-date">Thu, Jun 5</span></div>
+          </div>
+          <div class="connector"><div class="line filled"></div></div>
+        </div>
+        <!-- 4 (current) -->
+        <div class="stage">
+          <div class="stage-row">
+            <span class="circle done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></span>
+            <div class="stage-text"><span class="stage-label current">Results pending review</span><span class="stage-date">In progress</span></div>
+          </div>
+          <div class="connector"><div class="line dashed"></div></div>
+        </div>
+        <!-- 5 (future) -->
+        <div class="stage">
+          <div class="stage-row">
+            <span class="circle future"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#606069" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+            <div class="stage-text"><span class="stage-label future">Results ready</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab details -->
+      <div class="section">
+        <h2>Lab details</h2>
+        <div class="detail-row">
+          <span class="thumb">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+          </span>
+          <div class="detail-lines">
+            <div class="strong">Mochi Health Panel</div>
+            <div>CMP, TSH, A1c, Lipid panel</div>
+            <div>Quest Diagnostics &middot; via Ulta Labs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="section">
+        <h2>Instructions</h2>
+        <p class="body-text">Visit any Quest Diagnostics location to get your sample drawn. No appointment needed, just bring a photo ID. Fasting is not required for this panel.</p>
+      </div>
+
+      <!-- Draw location -->
+      <div class="section">
+        <h2>Nearest draw location</h2>
+        <p class="body-text">Quest Diagnostics<br>123 Market St, San Francisco, CA 94103</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
