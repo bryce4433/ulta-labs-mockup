@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochi — Patient Lab Results, Web (Ulta Labs mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #000045;
+    --navy-2: #3b3b8d;
+    --bg: #f3f6f9;
+    --card: #ffffff;
+    --text: #000045;
+    --text-subtle: #606069;
+    --text-subtler: #7e7f87;
+    --border-subtle: #00004520;
+    --ok-50: #ecfdf3;  --ok-500: #17b26a;  --ok-700: #0b8850;
+    --warn-50: #fffaeb; --warn-500: #f79009; --warn-700: #d06507;
+    --err-50: #fef3f2; --err-300: #fda29b; --err-500: #ea4135; --err-700: #c5291d;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: #fff;
+    display: flex;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar {
+    width: 232px; flex-shrink: 0; background: #fff;
+    border-right: 1px solid #eceef2;
+    display: flex; flex-direction: column;
+    padding: 28px 16px 20px;
+  }
+  .logo { font-size: 26px; font-weight: 700; letter-spacing: -1px; padding: 0 12px; }
+  .logo small { display: block; font-size: 9px; letter-spacing: 4px; font-weight: 600; margin-top: -4px; }
+  .nav { margin-top: 36px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .nav a {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px; border-radius: 12px;
+    color: var(--text-subtle); text-decoration: none;
+    font-size: 15px; font-weight: 500;
+  }
+  .nav a.active { background: #eef0f4; color: var(--navy); font-weight: 600; }
+  .user {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px; border-radius: 12px; border: 1px solid #eceef2;
+  }
+  .user .av { width: 34px; height: 34px; border-radius: 50%; background: #e3e6ec; color: var(--navy-2); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .user .meta { font-size: 12px; line-height: 1.3; min-width: 0; }
+  .user .meta b { font-weight: 600; font-size: 13px; }
+  .user .meta span { color: var(--text-subtler); display: block; overflow: hidden; text-overflow: ellipsis; }
+  .signout { display: flex; align-items: center; gap: 12px; padding: 14px; margin-top: 8px; color: var(--text-subtle); font-size: 15px; font-weight: 500; }
+
+  /* ---------- main ---------- */
+  .main { flex: 1; background: var(--bg); padding: 32px 48px 56px; overflow: auto; }
+  .crumb { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-subtler); font-weight: 500; margin-bottom: 12px; }
+  .crumb a { color: var(--text-subtler); text-decoration: none; }
+  .main h1 { font-size: 30px; font-weight: 700; color: var(--navy); letter-spacing: -0.6px; margin-bottom: 24px; }
+
+  .wrap { max-width: 880px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: 0 1px 2px rgba(0, 0, 30, 0.04);
+    border: 1px solid #eef0f4;
+  }
+  .card + .card { margin-top: 18px; }
+
+  /* order header */
+  .head-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  .head-left { display: flex; align-items: center; gap: 16px; }
+  .tile { width: 48px; height: 48px; border-radius: 12px; background: #eef1f6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .panel-name { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+  .panel-sub { font-size: 14px; color: var(--text-subtler); margin-top: 3px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid; white-space: nowrap; }
+  .pill-ok { color: var(--ok-700); background: var(--ok-50); border-color: var(--ok-500); }
+
+  .reviewed-note { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 13px 16px; background: var(--ok-50); border: 1px solid #abefc6; border-radius: 12px; }
+  .reviewed-note p { font-size: 14px; color: var(--ok-700); font-weight: 500; }
+
+  .meta-grid { display: flex; gap: 48px; margin-top: 22px; flex-wrap: wrap; }
+  .meta-grid .k { font-size: 12px; color: var(--text-subtler); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .meta-grid .v { font-size: 15px; font-weight: 600; margin-top: 5px; }
+
+  /* provider note */
+  .provider-note { border-left: 3px solid var(--navy-2); }
+  .pn-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--navy-2); margin-bottom: 14px; }
+  .pn-head { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+  .pn-av { width: 42px; height: 42px; border-radius: 50%; background: #e8e8f3; color: var(--navy-2); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+  .pn-name { font-size: 15px; font-weight: 600; }
+  .pn-date { font-size: 13px; color: var(--text-subtler); margin-top: 2px; }
+  .pn-body { font-size: 15px; line-height: 1.55; color: var(--text-subtle); max-width: 640px; }
+
+  /* results table */
+  .results-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .results-head h2 { font-size: 18px; font-weight: 600; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; border: none; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 600; padding: 10px 16px; cursor: pointer; white-space: nowrap; }
+  .btn-outline { background: #fff; color: var(--navy); border: 1px solid var(--border-subtle); }
+  .btn-dark { background: var(--navy); color: #fff; }
+
+  table.labs { width: 100%; border-collapse: collapse; }
+  table.labs th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-subtler); font-weight: 600; padding: 6px 12px 12px; border-bottom: 1px solid var(--border-subtle);
+  }
+  table.labs th.num, table.labs td.num { text-align: right; }
+  table.labs td { padding: 13px 12px; border-bottom: 1px solid var(--border-subtle); font-size: 15px; vertical-align: middle; }
+  table.labs tr:last-child td { border-bottom: none; }
+  .group td {
+    padding: 18px 12px 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-subtle); font-weight: 700; border-bottom: none;
+  }
+  .test-name { font-weight: 500; }
+  .val { font-weight: 600; font-size: 16px; }
+  .val-high { color: var(--warn-700); }
+  .val-crit { color: var(--err-700); }
+  .ref { color: var(--text-subtler); font-size: 14px; }
+  .flag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; padding: 3px 9px; border-radius: 999px; border: 1px solid; }
+  .flag-high { color: var(--warn-700); background: var(--warn-50); border-color: var(--warn-500); }
+  .flag-crit { color: var(--err-700); background: var(--err-50); border-color: var(--err-500); }
+  .flag-ok { color: var(--ok-700); background: var(--ok-50); border-color: #abefc6; }
+
+  .pdf-row { display: flex; align-items: center; gap: 16px; }
+  .pdf-ico { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; background: #fdeceb; display: flex; align-items: center; justify-content: center; }
+  .pdf-meta .t { font-size: 15px; font-weight: 600; }
+  .pdf-meta .s { font-size: 13px; color: var(--text-subtler); margin-top: 2px; }
+  .grow { flex: 1; min-width: 0; }
+  .footnote { font-size: 12px; color: var(--text-subtler); margin-top: 18px; }
+</style>
+</head>
+<body>
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="logo">mochi<small>HEALTH</small></div>
+    <nav class="nav">
+      <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
+      <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg> Progress Tracker</a>
+      <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg> Messages</a>
+      <a class="active" href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h5v5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2z"/></svg> Care</a>
+      <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Visits</a>
+      <a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Billing</a>
+    </nav>
+    <div class="user">
+      <span class="av">JA</span>
+      <span class="meta"><b>Jacky Alabama</b><span>jacky+alabama@mochi.com</span></span>
+    </div>
+    <div class="signout"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out</div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <div class="crumb">
+      <a href="#">Care</a>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <a href="#">Labs &amp; Testing</a>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Mochi Health Panel</span>
+    </div>
+    <h1>Lab Results</h1>
+
+    <div class="wrap">
+      <!-- order header -->
+      <div class="card">
+        <div class="head-top">
+          <div class="head-left">
+            <span class="tile">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+            </span>
+            <div>
+              <div class="panel-name">Mochi Health Panel</div>
+              <div class="panel-sub">Quest Diagnostics &middot; via Ulta Labs</div>
+            </div>
+          </div>
+          <span class="pill pill-ok">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0b8850" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Complete &middot; Provider reviewed
+          </span>
+        </div>
+
+        <div class="reviewed-note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b8850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <p>Reviewed by your provider. These results are ready for you to view.</p>
+        </div>
+
+        <div class="meta-grid">
+          <div><div class="k">Ordered</div><div class="v">Jun 2, 2026</div></div>
+          <div><div class="k">Resulted</div><div class="v">Jun 9, 2026</div></div>
+          <div><div class="k">Ordering provider</div><div class="v">Dr. Rhea Levine</div></div>
+          <div><div class="k">Reviewed by</div><div class="v">Dr. Rhea Levine &middot; Jun 10</div></div>
+        </div>
+      </div>
+
+      <!-- provider note (optional: only renders if the reviewing provider left a comment) -->
+      <div class="card provider-note">
+        <div class="pn-label">YOUR PROVIDER'S NOTE</div>
+        <div class="pn-head">
+          <span class="pn-av">RL</span>
+          <div class="grow">
+            <div class="pn-name">Dr. Rhea Levine</div>
+            <div class="pn-date">Jun 10, 2026</div>
+          </div>
+        </div>
+        <p class="pn-body">Your A1c and cholesterol came back slightly above range. Nothing urgent, but let's make a few small diet changes. I'll follow up in a message with the details, and reach out anytime with questions.</p>
+      </div>
+
+      <!-- results table -->
+      <div class="card">
+        <div class="results-head">
+          <h2>Results</h2>
+          <button class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </button>
+        </div>
+
+        <table class="labs">
+          <thead>
+            <tr>
+              <th style="width:38%">Test</th>
+              <th class="num" style="width:20%">Result</th>
+              <th style="width:27%">Reference range</th>
+              <th style="width:15%">Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="4">Comprehensive Metabolic Panel</td></tr>
+            <tr><td class="test-name">Glucose</td><td class="num"><span class="val val-high">105</span> mg/dL</td><td class="ref">65&ndash;99 mg/dL</td><td><span class="flag flag-high">HIGH</span></td></tr>
+            <tr><td class="test-name">Calcium</td><td class="num"><span class="val">9.4</span> mg/dL</td><td class="ref">8.6&ndash;10.2 mg/dL</td><td><span class="flag flag-ok">In range</span></td></tr>
+            <tr><td class="test-name">Sodium</td><td class="num"><span class="val">140</span> mmol/L</td><td class="ref">135&ndash;146 mmol/L</td><td><span class="flag flag-ok">In range</span></td></tr>
+            <tr><td class="test-name">Potassium</td><td class="num"><span class="val">4.2</span> mmol/L</td><td class="ref">3.5&ndash;5.3 mmol/L</td><td><span class="flag flag-ok">In range</span></td></tr>
+            <tr><td class="test-name">Creatinine</td><td class="num"><span class="val">0.9</span> mg/dL</td><td class="ref">0.6&ndash;1.1 mg/dL</td><td><span class="flag flag-ok">In range</span></td></tr>
+            <tr><td class="test-name">ALT</td><td class="num"><span class="val">22</span> U/L</td><td class="ref">9&ndash;46 U/L</td><td><span class="flag flag-ok">In range</span></td></tr>
+
+            <tr class="group"><td colspan="4">Thyroid</td></tr>
+            <tr><td class="test-name">TSH</td><td class="num"><span class="val">2.1</span> mIU/L</td><td class="ref">0.40&ndash;4.50 mIU/L</td><td><span class="flag flag-ok">In range</span></td></tr>
+
+            <tr class="group"><td colspan="4">Diabetes</td></tr>
+            <tr><td class="test-name">Hemoglobin A1c</td><td class="num"><span class="val val-high">5.9</span> %</td><td class="ref">&lt; 5.7 %</td><td><span class="flag flag-high">HIGH</span></td></tr>
+
+            <tr class="group"><td colspan="4">Lipid Panel</td></tr>
+            <tr><td class="test-name">Total Cholesterol</td><td class="num"><span class="val val-high">215</span> mg/dL</td><td class="ref">&lt; 200 mg/dL</td><td><span class="flag flag-high">HIGH</span></td></tr>
+            <tr><td class="test-name">HDL Cholesterol</td><td class="num"><span class="val">48</span> mg/dL</td><td class="ref">&gt; 40 mg/dL</td><td><span class="flag flag-ok">In range</span></td></tr>
+            <tr><td class="test-name">LDL Cholesterol</td><td class="num"><span class="val val-crit">168</span> mg/dL</td><td class="ref">&lt; 100 mg/dL</td><td><span class="flag flag-crit">CRITICAL</span></td></tr>
+            <tr><td class="test-name">Triglycerides</td><td class="num"><span class="val">130</span> mg/dL</td><td class="ref">&lt; 150 mg/dL</td><td><span class="flag flag-ok">In range</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PDF card -->
+      <div class="card">
+        <div class="pdf-row">
+          <span class="pdf-ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea4135" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <div class="pdf-meta grow">
+            <div class="t">Full lab report</div>
+            <div class="s">Official Quest result &middot; PDF</div>
+          </div>
+          <button class="btn btn-dark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      <p class="footnote">Results provided by Quest Diagnostics via Ulta Labs. Questions about your results? Message your care team.</p>
+    </div>
+  </main>
+</body>
+</html>
