@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochi — Draw site selection (Ulta Labs mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --text: #000014; --subtle: #606069; --subtler: #7e7f87;
+    --secondary: #3b3b8d; --secondary-subtle: #ebebf4;
+    --bg: #f3f6f9; --card: #ffffff; --border: #3b3b8d26;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #e7ebf0; color: var(--text);
+    padding: 36px 20px 56px; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .cap { font-size: 13px; font-weight: 600; color: var(--subtle); }
+
+  .phone { position: relative; width: 380px; height: 760px; background: var(--bg); border-radius: 44px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,20,.25); border: 1px solid rgba(0,0,30,.06); }
+  .statusbar { height: 50px; padding: 0 26px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: #0b0b16; }
+  .battery { border: 1.5px solid #0b0b16; border-radius: 4px; padding: 1px 3px; font-size: 9px; font-weight: 700; }
+  .appbar { display: flex; align-items: center; gap: 12px; padding: 2px 20px 14px; }
+  .appbar .back { color: var(--text); display: flex; }
+  .appbar h1 { font-size: 18px; font-weight: 600; }
+  .screen { padding: 0 18px; }
+
+  .card { background: var(--card); border-radius: 14px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .grow { flex: 1; min-width: 0; }
+  .tile { width: 38px; height: 38px; border-radius: 9px; background: #eef1f6; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .t { font-size: 15px; font-weight: 600; }
+  .s { font-size: 13px; color: var(--subtle); margin-top: 1px; }
+  .price { font-size: 16px; font-weight: 600; }
+
+  .label { font-size: 12px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--subtle); margin: 20px 2px 8px; }
+
+  /* selected draw-site row */
+  .site { background: var(--card); border-radius: 14px; padding: 14px; border: 1.5px solid var(--secondary); box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .pin { width: 38px; height: 38px; border-radius: 9px; background: var(--secondary-subtle); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .miles { font-size: 13px; color: var(--secondary); font-weight: 600; }
+  .change { font-size: 14px; font-weight: 600; color: var(--secondary); white-space: nowrap; }
+
+  .agree { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 0 2px; }
+  .box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--secondary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .agree p { font-size: 13px; color: var(--subtle); }
+
+  .pay { position: absolute; left: 18px; right: 18px; bottom: 22px; }
+  .btn { display: flex; align-items: center; justify-content: center; width: 100%; border: none; border-radius: 999px; font-family: inherit; font-size: 16px; font-weight: 600; padding: 15px; }
+  .btn-navy { background: #000045; color: #fff; }
+
+  /* ---- bottom sheet (phone B) ---- */
+  .backdrop { position: absolute; inset: 0; background: rgba(0,0,20,.35); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--card); border-radius: 24px 24px 0 0; padding: 10px 18px 20px; box-shadow: 0 -8px 30px rgba(0,0,30,.18); }
+  .grab { width: 38px; height: 5px; border-radius: 999px; background: #d7dae2; margin: 4px auto 12px; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .sheet-head h2 { font-size: 18px; font-weight: 600; }
+  .x { color: var(--subtle); display: flex; }
+  .zip { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 12px; padding: 11px 13px; margin-bottom: 14px; }
+  .zip svg { color: var(--subtler); flex-shrink: 0; }
+  .zip .zlabel { font-size: 12px; color: var(--subtler); }
+  .zip .zval { font-size: 15px; font-weight: 600; }
+  .zip .go { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--secondary); }
+
+  .opt { display: flex; align-items: center; gap: 12px; padding: 12px 2px; border-bottom: 1px solid var(--border); }
+  .opt:last-of-type { border-bottom: none; }
+  .radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c3c6d4; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .radio.on { border-color: var(--secondary); }
+  .radio.on::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--secondary); }
+  .opt .t { font-size: 14px; font-weight: 600; }
+  .opt .s { font-size: 12px; }
+  .opt .miles { flex-shrink: 0; }
+  .sheet .btn { margin-top: 16px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ===== Phone A: default ===== -->
+    <div class="col">
+      <div class="cap">Default — nearest site pre-selected</div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span><span class="battery">82</span></span></div>
+        <div class="appbar">
+          <span class="back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+          <h1>Confirm lab order</h1>
+        </div>
+        <div class="screen">
+          <div class="card">
+            <div class="row">
+              <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+              <div class="grow"><div class="t">Mochi Health Panel</div><div class="s">Cash pay</div></div>
+              <span class="price">$89</span>
+            </div>
+          </div>
+
+          <div class="label">Draw location</div>
+          <div class="site">
+            <div class="row">
+              <span class="pin"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div class="grow">
+                <div class="t">Quest Diagnostics</div>
+                <div class="s">123 Market St, San Francisco</div>
+                <div class="miles">2.3 mi away</div>
+              </div>
+              <span class="change">Change</span>
+            </div>
+          </div>
+
+          <div class="agree">
+            <span class="box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <p>I agree to Ulta's lab <span style="color:#3b3b8d;text-decoration:underline">order agreement</span></p>
+          </div>
+        </div>
+        <div class="pay"><button class="btn btn-navy">Accept &amp; Pay $89</button></div>
+      </div>
+    </div>
+
+    <!-- ===== Phone B: expanded sheet ===== -->
+    <div class="col">
+      <div class="cap">Tap "Change" → choose from the 5 closest</div>
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span><span class="battery">82</span></span></div>
+        <div class="appbar">
+          <span class="back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+          <h1>Confirm lab order</h1>
+        </div>
+        <div class="screen">
+          <div class="card">
+            <div class="row">
+              <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b3b8d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 15h9"/></svg></span>
+              <div class="grow"><div class="t">Mochi Health Panel</div><div class="s">Cash pay</div></div>
+              <span class="price">$89</span>
+            </div>
+          </div>
+          <div class="label">Draw location</div>
+        </div>
+
+        <!-- sheet -->
+        <div class="backdrop"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="sheet-head">
+            <h2>Choose a draw site</h2>
+            <span class="x"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+          </div>
+          <div class="zip">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span><span class="zlabel">Near </span><span class="zval">94103</span></span>
+            <span class="go">Search</span>
+          </div>
+
+          <div class="opt">
+            <span class="radio on"></span>
+            <div class="grow"><div class="t">Quest Diagnostics</div><div class="s">123 Market St, San Francisco</div></div>
+            <span class="miles">2.3 mi</span>
+          </div>
+          <div class="opt">
+            <span class="radio"></span>
+            <div class="grow"><div class="t">Quest Diagnostics</div><div class="s">88 Kearny St, San Francisco</div></div>
+            <span class="miles">3.1 mi</span>
+          </div>
+          <div class="opt">
+            <span class="radio"></span>
+            <div class="grow"><div class="t">Quest Diagnostics</div><div class="s">2300 16th St, San Francisco</div></div>
+            <span class="miles">4.0 mi</span>
+          </div>
+          <div class="opt">
+            <span class="radio"></span>
+            <div class="grow"><div class="t">Quest Diagnostics</div><div class="s">1580 Valencia St, San Francisco</div></div>
+            <span class="miles">5.2 mi</span>
+          </div>
+          <div class="opt">
+            <span class="radio"></span>
+            <div class="grow"><div class="t">Quest Diagnostics</div><div class="s">3838 California St, San Francisco</div></div>
+            <span class="miles">6.8 mi</span>
+          </div>
+
+          <button class="btn btn-navy">Use this location</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
